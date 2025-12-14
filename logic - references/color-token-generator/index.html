@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Token Gadget</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Color Token Gadget</h1>
+            <p>Generate consistent tints and shades for your design system.</p>
+        </header>
+
+        <section class="picker-section">
+            <div class="color-input-wrapper">
+                <input type="color" id="primaryColor" value="#646cff">
+                <label for="primaryColor" id="colorLabel">#646cff</label>
+            </div>
+            <p class="instruction">Pick a primary color</p>
+        </section>
+
+        <main class="palette-display">
+            <div class="tone-group" id="lighterTones">
+                <div class="group-header">
+                    <h2>Lighter Tones (Tints)</h2>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="tone-grid" id="tintsGrid"></div>
+            </div>
+
+            <div class="tone-group" id="baseColor">
+                <div class="group-header">
+                    <h2>Base</h2>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="tone-grid">
+                    <div class="color-card base-card" id="baseCard">
+                        <div class="color-swatch"></div>
+                        <div class="color-info">
+                            <span class="color-value"></span>
+                            <span class="color-name">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tone-group" id="darkerTones">
+                <div class="group-header">
+                    <h2>Darker Tones (Shades)</h2>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="tone-grid" id="shadesGrid"></div>
+            </div>
+
+            <div class="tone-group" id="neutralLightTones">
+                <div class="group-header">
+                    <h2>Neutral Light</h2>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="tone-grid" id="neutralLightGrid"></div>
+            </div>
+
+            <div class="tone-group" id="neutralDarkTones">
+                <div class="group-header">
+                    <h2>Neutral Dark</h2>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="tone-grid" id="neutralDarkGrid"></div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaComp | Color Selector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>ChromaComp</h1>
+            <p>Harmony in Motion</p>
+        </header>
+
+        <main>
+            <div class="wheel-container">
+                <div class="color-wheel" id="colorWheel">
+                    <div class="selector primary" id="primarySelector"></div>
+                    <div class="selector complementary" id="complementarySelector"></div>
+                    <div class="center-cap"></div>
+                </div>
+            </div>
+
+            <div class="cards-container">
+                <div class="color-card primary-card">
+                    <div class="color-preview" id="primaryPreview"></div>
+                    <div class="color-info">
+                        <span class="label">Primary</span>
+                        <div class="value-group">
+                            <span class="value-label">HEX</span>
+                            <span class="value" id="primaryHex">#FF0000</span>
+                        </div>
+                        <div class="value-group">
+                            <span class="value-label">HSL</span>
+                            <span class="value" id="primaryHsl">0°, 100%, 50%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="color-card complementary-card">
+                    <div class="color-preview" id="compPreview"></div>
+                    <div class="color-info">
+                        <span class="label">Complementary</span>
+                         <div class="value-group">
+                            <span class="value-label">HEX</span>
+                            <span class="value" id="compHex">#00FFFF</span>
+                        </div>
+                        <div class="value-group">
+                            <span class="value-label">HSL</span>
+                            <span class="value" id="compHsl">180°, 100%, 50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="harmony-visualizer">
+                <div class="harmony-strip" id="harmonyStrip"></div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+:root {
+  /* Dynamic Color Variables - HSL format */
+  --primary-h: 27;
+  --primary-s: 100%;
+  --primary-l: 50%;
+  --color-primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+
+  --comp-h: 207;
+  --comp-s: 100%;
+  --comp-l: 50%;
+  --color-complementary: hsl(var(--comp-h), var(--comp-s), var(--comp-l));
+
+  /* Design System Controls */
+  --button-text-color: light;
+  --border-radius: 8px;
+
+  /* Background colors - Dark Mode Default */
+  --background: 222 47% 11%;
+  --foreground: 0 0% 98%;
+
+  /* Card colors */
+  --card: 222 47% 11%;
+  --card-foreground: 0 0% 98%;
+
+  /* Border and input */
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: var(--color-primary);
+
+  /* Neutral color tokens - Dark Mode */
+  --neutral-50: 0 0% 98%;
+  --neutral-100: 0 0% 96%;
+  --neutral-200: 0 0% 90%;
+  --neutral-300: 0 0% 83%;
+  --neutral-400: 0 0% 64%;
+  --neutral-500: 0 0% 45%;
+  --neutral-600: 0 0% 32%;
+  --neutral-700: 0 0% 23%;
+  --neutral-800: 0 0% 15%;
+  --neutral-900: 0 0% 9%;
+  --neutral-950: 0 0% 3%;
+
+  /* Component backgrounds - Dark Mode */
+  --input-bg: 0 0% 15%;
+  --input-border: 0 0% 25%;
+  --button-outline-bg: transparent;
+  --button-outline-border: 0 0% 25%;
+  --button-ghost-bg-hover: 0 0% 20%;
+  --switch-unchecked-bg: 0 0% 20%;
+  
+  /* Toast backgrounds - Dark Mode */
+  --toast-default-bg: 0 0% 15%;
+  --toast-default-border: 0 0% 25%;
+  
+  /* Text colors - Dark Mode */
+  --text-primary: 0 0% 100%;
+  --text-secondary: 0 0% 80%;
+  --text-tertiary: 0 0% 60%;
+  --text-muted: 0 0% 50%;
+  --text-disabled: 0 0% 40%;
+}
+
+[data-theme="light"] {
+  /* Background colors - Light Mode */
+  --background: 0 0% 98%;
+  --foreground: 0 0% 9%;
+
+  /* Card colors - Light Mode */
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+
+  /* Border and input - Light Mode */
+  --border: 0 0% 90%;
+  --input: 0 0% 96%;
+
+  /* Component backgrounds - Light Mode */
+  --input-bg: 0 0% 100%;
+  --input-border: 0 0% 80%;
+  --button-outline-bg: transparent;
+  --button-outline-border: 0 0% 80%;
+  --button-ghost-bg-hover: 0 0% 96%;
+  --switch-unchecked-bg: 0 0% 90%;
+  
+  /* Toast backgrounds - Light Mode */
+  --toast-default-bg: 0 0% 100%;
+  --toast-default-border: 0 0% 85%;
+  
+  /* Text colors - Light Mode */
+  --text-primary: 0 0% 9%;
+  --text-secondary: 0 0% 25%;
+  --text-tertiary: 0 0% 45%;
+  --text-muted: 0 0% 55%;
+  --text-disabled: 0 0% 65%;
+  
+  /* Primary color darker tone for labels in light mode (20% darker) */
+  --primary-l-darker: max(0%, calc(var(--primary-l) - 20%));
+  --color-primary-darker: hsl(var(--primary-h), var(--primary-s), var(--primary-l-darker));
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Enhanced focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for color changes - scoped to elements that need them */
+button,
+a,
+[role="button"],
+[role="slider"],
+.card,
+[class*="bg-"],
+[class*="border-"],
+[class*="text-"] {
+  transition-property: background-color, border-color, color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Respect prefers-reduced-motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: var(--color-primary);
+  
+  /* Neutral color tokens */
+  --color-neutral-50: hsl(var(--neutral-50));
+  --color-neutral-100: hsl(var(--neutral-100));
+  --color-neutral-200: hsl(var(--neutral-200));
+  --color-neutral-300: hsl(var(--neutral-300));
+  --color-neutral-400: hsl(var(--neutral-400));
+  --color-neutral-500: hsl(var(--neutral-500));
+  --color-neutral-600: hsl(var(--neutral-600));
+  --color-neutral-700: hsl(var(--neutral-700));
+  --color-neutral-800: hsl(var(--neutral-800));
+  --color-neutral-900: hsl(var(--neutral-900));
+  --color-neutral-950: hsl(var(--neutral-950));
+  
+  /* Component tokens */
+  --color-input-bg: hsl(var(--input-bg));
+  --color-input-border: hsl(var(--input-border));
+  --color-button-outline-bg: hsl(var(--button-outline-bg));
+  --color-button-outline-border: hsl(var(--button-outline-border));
+  --color-button-ghost-bg-hover: hsl(var(--button-ghost-bg-hover));
+  --color-switch-unchecked-bg: hsl(var(--switch-unchecked-bg));
+  --color-toast-default-bg: hsl(var(--toast-default-bg));
+  --color-toast-default-border: hsl(var(--toast-default-border));
+  
+  /* Text color tokens */
+  --color-text-primary: hsl(var(--text-primary));
+  --color-text-secondary: hsl(var(--text-secondary));
+  --color-text-tertiary: hsl(var(--text-tertiary));
+  --color-text-muted: hsl(var(--text-muted));
+  --color-text-disabled: hsl(var(--text-disabled));
+  --color-primary-darker: var(--color-primary-darker);
+}
