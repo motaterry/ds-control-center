@@ -37,7 +37,7 @@ The easiest way to deploy is using Vercel's GitHub integration:
 4. Vercel will automatically detect Next.js and configure the project
 5. Click "Deploy"
 
-Your app will be live at `https://ds-control-center.vercel.app` (or your custom domain).
+Your app will be live at `https://ds-control-center-git-verc-9fc9a2-terrymota0-gmailcoms-projects.vercel.app` (or your custom domain).
 
 Alternatively, deploy using Vercel CLI:
 
@@ -48,7 +48,7 @@ vercel --prod
 
 ## 🌐 Live Preview
 
-**[View Live Demo →](https://ds-control-center.vercel.app)**
+**[View Live Demo →](https://ds-control-center-git-verc-9fc9a2-terrymota0-gmailcoms-projects.vercel.app)**
 
 Interactive color wheel with real-time UI updates. Try dragging the color wheel to see all components update instantly!
 
