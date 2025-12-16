@@ -2,6 +2,9 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { useTheme } from "@/components/theme-context"
+import { useDesignSystem } from "@/components/design-system-context"
+import { useColorTheme } from "@/components/color-picker/color-context"
+import { hslToHex, getAccessibleTextColor } from "@/lib/color-utils"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
 
@@ -23,8 +26,16 @@ const MONTHS = [
 
 export function CalendarWidget() {
   const { mode } = useTheme()
+  const { buttonTextColor } = useDesignSystem()
+  const { theme } = useColorTheme()
   const isDark = mode === "dark"
   const [currentDate, setCurrentDate] = useState(new Date(2025, 8, 1)) // September 2025
+  
+  // Calculate the effective text color (handles "auto" mode)
+  const primaryHex = hslToHex(theme.primary.h, theme.primary.s, theme.primary.l)
+  const effectiveTextColor = buttonTextColor === "auto" 
+    ? getAccessibleTextColor(primaryHex) 
+    : buttonTextColor
   const month = currentDate.getMonth()
   const year = currentDate.getFullYear()
 
@@ -57,7 +68,7 @@ export function CalendarWidget() {
           <button
             onClick={goToPreviousMonth}
             aria-label="Previous month"
-            className={`p-1 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 ${
+            className={`p-1 rounded transition-all duration-200 ease-out hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 ${
               isDark 
                 ? "hover:bg-white/10 focus:ring-offset-slate-800" 
                 : "hover:bg-gray-200 focus:ring-offset-white"
@@ -75,7 +86,7 @@ export function CalendarWidget() {
           <button
             onClick={goToNextMonth}
             aria-label="Next month"
-            className={`p-1 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 ${
+            className={`p-1 rounded transition-all duration-200 ease-out hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 ${
               isDark 
                 ? "hover:bg-white/10 focus:ring-offset-slate-800" 
                 : "hover:bg-gray-200 focus:ring-offset-white"
@@ -106,15 +117,16 @@ export function CalendarWidget() {
           {days.map((day, index) => (
             <button
               key={index}
-              className={`aspect-square flex items-center justify-center text-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] ${
+              className={`aspect-square flex items-center justify-center text-sm rounded transition-all duration-200 ease-out hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] ${
                 day === selectedDay
-                  ? "bg-[var(--color-primary)] text-white font-semibold"
+                  ? "bg-[var(--color-primary)] font-semibold scale-105"
                   : day
                     ? isDark
                       ? "text-white/80 hover:bg-white/10 cursor-pointer"
                       : "text-gray-900 hover:bg-gray-200 cursor-pointer"
                     : "text-transparent cursor-default"
               }`}
+              style={day === selectedDay ? { color: effectiveTextColor === "dark" ? "#111827" : "#ffffff" } : undefined}
               aria-label={day ? `Day ${day}` : undefined}
               aria-pressed={day === selectedDay}
               disabled={!day}

@@ -148,3 +148,72 @@ export function getComplementaryColor(hue: number): number {
 export function formatHsl(h: number, s: number, l: number): string {
   return `${Math.round(h)}°, ${Math.round(s)}%, ${Math.round(l)}%`
 }
+
+/**
+ * WCAG Accessibility Contrast Utilities
+ */
+
+/**
+ * Calculate relative luminance from RGB values per WCAG 2.1 formula
+ * @see https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+ */
+export function getRelativeLuminance(rgb: RGB): number {
+  const [r, g, b] = [rgb.r, rgb.g, rgb.b].map((c) => {
+    const sRGB = c / 255
+    return sRGB <= 0.03928 ? sRGB / 12.92 : Math.pow((sRGB + 0.055) / 1.055, 2.4)
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+/**
+ * Calculate WCAG contrast ratio between two colors
+ * @param color1 - First color (hex)
+ * @param color2 - Second color (hex)
+ * @returns Contrast ratio (1 to 21)
+ * @see https://www.w3.org/TR/WCAG21/#dfn-contrast-ratio
+ */
+export function getContrastRatio(color1: string, color2: string): number {
+  const lum1 = getRelativeLuminance(hexToRgb(color1))
+  const lum2 = getRelativeLuminance(hexToRgb(color2))
+  const lighter = Math.max(lum1, lum2)
+  const darker = Math.min(lum1, lum2)
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+/**
+ * Determine the accessible text color for a given background color
+ * Uses WCAG AA standard (4.5:1 minimum contrast ratio for normal text)
+ * @param backgroundColor - Background color (hex)
+ * @param darkText - Color to use for dark text (default: #111827 - gray-900)
+ * @param lightText - Color to use for light text (default: #FFFFFF - white)
+ * @returns "dark" or "light" based on which provides better contrast
+ */
+export function getAccessibleTextColor(
+  backgroundColor: string,
+  darkText: string = "#111827",
+  lightText: string = "#FFFFFF"
+): "dark" | "light" {
+  const darkContrast = getContrastRatio(backgroundColor, darkText)
+  const lightContrast = getContrastRatio(backgroundColor, lightText)
+  
+  // Return whichever provides better contrast
+  return darkContrast >= lightContrast ? "dark" : "light"
+}
+
+/**
+ * Check if a color combination meets WCAG AA standards
+ * @param foreground - Foreground/text color (hex)
+ * @param background - Background color (hex)
+ * @param isLargeText - Whether the text is large (18pt+ or 14pt bold)
+ * @returns true if the contrast ratio meets WCAG AA standards
+ */
+export function meetsWCAGAA(
+  foreground: string,
+  background: string,
+  isLargeText: boolean = false
+): boolean {
+  const ratio = getContrastRatio(foreground, background)
+  // WCAG AA requires 4.5:1 for normal text, 3:1 for large text
+  const threshold = isLargeText ? 3 : 4.5
+  return ratio >= threshold
+}

@@ -3,6 +3,9 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-context"
+import { useDesignSystem } from "@/components/design-system-context"
+import { useColorTheme } from "@/components/color-picker/color-context"
+import { hslToHex, getAccessibleTextColor } from "@/lib/color-utils"
 import { MoreVertical, Check, X, AlertCircle } from "lucide-react"
 import Image from "next/image"
 
@@ -32,7 +35,15 @@ const notifications = [
 
 export function NotificationsPanel() {
   const { mode } = useTheme()
+  const { buttonTextColor } = useDesignSystem()
+  const { theme } = useColorTheme()
   const isDark = mode === "dark"
+  
+  // Calculate the effective text color (handles "auto" mode)
+  const primaryHex = hslToHex(theme.primary.h, theme.primary.s, theme.primary.l)
+  const effectiveTextColor = buttonTextColor === "auto" 
+    ? getAccessibleTextColor(primaryHex) 
+    : buttonTextColor
   
   return (
     <Card className="h-full flex flex-col p-8">
@@ -49,7 +60,10 @@ export function NotificationsPanel() {
           }`}>
             Unread
           </span>
-          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[var(--color-primary)] text-white min-w-[24px] text-center">
+          <span 
+            className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[var(--color-primary)] min-w-[24px] text-center"
+            style={{ color: effectiveTextColor === "dark" ? "#111827" : "#ffffff" }}
+          >
             6
           </span>
         </div>
@@ -91,7 +105,7 @@ export function NotificationsPanel() {
                     </span>
                   </div>
                   <button
-                    className={`p-1 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] flex-shrink-0 ${
+                    className={`p-1 rounded-md transition-all duration-200 ease-out hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] flex-shrink-0 ${
                       isDark ? "hover:bg-white/10" : "hover:bg-gray-200"
                     }`}
                     aria-label="More options"

@@ -15,10 +15,10 @@ const Card = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "border backdrop-blur-sm shadow-sm transition-colors",
+        "border backdrop-blur-sm shadow-sm transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-0.5",
         isDark
-          ? "border-white/10 bg-neutral-900/90 text-white"
-          : "border-gray-200 bg-white text-gray-900",
+          ? "border-white/10 bg-neutral-900/90 text-white hover:border-white/20"
+          : "border-gray-200 bg-white text-gray-900 hover:border-gray-300",
         className
       )}
       style={{

@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { useTheme } from "@/components/theme-context"
+import { useColorTheme } from "@/components/color-picker/color-context"
 import { MoreVertical } from "lucide-react"
 import Image from "next/image"
 
@@ -13,7 +14,12 @@ import Image from "next/image"
  */
 export function UserProfileCard() {
   const { mode } = useTheme()
+  const { theme } = useColorTheme()
   const isDark = mode === "dark"
+  
+  // Use lighter tones (tints) for dark mode, darker tones (shades) for light mode
+  // Index 2 = 30% mix, provides good contrast
+  const tagColor = isDark ? theme.tints[2] : theme.shades[2]
   
   return (
     <Card className="p-6 h-full flex flex-col">
@@ -32,7 +38,7 @@ export function UserProfileCard() {
         
         {/* Menu Icon - Aligned with Avatar */}
         <button
-          className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] -mt-1 ${
+          className={`p-1.5 rounded-md transition-all duration-200 ease-out hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] -mt-1 ${
             isDark ? "hover:bg-white/10" : "hover:bg-gray-200"
           }`}
           aria-label="More options"
@@ -62,23 +68,21 @@ export function UserProfileCard() {
         {/* Top row: Two tags side by side */}
         <div className="flex gap-2">
           <span
-            className={`px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent ${
-              isDark
-                ? "border-[var(--color-primary)]/60 text-[var(--color-primary)]/90"
-                : "border-[var(--color-primary-darker)]/60 text-[var(--color-primary-darker)]"
-            }`}
-            style={isDark ? { filter: 'brightness(1.3)' } : {}}
+            className="px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent"
+            style={{ 
+              borderColor: `${tagColor}99`, // 60% opacity
+              color: tagColor 
+            }}
             role="listitem"
           >
             UI UX Designer
           </span>
           <span
-            className={`px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent ${
-              isDark
-                ? "border-[var(--color-primary)]/60 text-[var(--color-primary)]/90"
-                : "border-[var(--color-primary-darker)]/60 text-[var(--color-primary-darker)]"
-            }`}
-            style={isDark ? { filter: 'brightness(1.3)' } : {}}
+            className="px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent"
+            style={{ 
+              borderColor: `${tagColor}99`, // 60% opacity
+              color: tagColor 
+            }}
             role="listitem"
           >
             Product Management
@@ -88,12 +92,11 @@ export function UserProfileCard() {
         {/* Bottom row: Single tag aligned left */}
         <div className="flex gap-2">
           <span
-            className={`px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent ${
-              isDark
-                ? "border-[var(--color-primary)]/60 text-[var(--color-primary)]/90"
-                : "border-[var(--color-primary-darker)]/60 text-[var(--color-primary-darker)]"
-            }`}
-            style={isDark ? { filter: 'brightness(1.3)' } : {}}
+            className="px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent"
+            style={{ 
+              borderColor: `${tagColor}99`, // 60% opacity
+              color: tagColor 
+            }}
             role="listitem"
           >
             AI Engineer

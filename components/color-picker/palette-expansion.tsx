@@ -3,13 +3,16 @@
 import React, { useState } from "react"
 import { useColorTheme } from "./color-context"
 import { useToast } from "@/components/ui/toast"
+import { useTheme } from "@/components/theme-context"
 import { ChevronDown } from "lucide-react"
 
 const PERCENTAGES = [5, 20, 30, 40, 50, 60, 70, 80, 90]
 
 export function PaletteExpansion() {
   const { theme } = useColorTheme()
+  const { mode } = useTheme()
   const { addToast } = useToast()
+  const isDark = mode === "dark"
   const [expanded, setExpanded] = useState({
     tints: true,
     shades: true,
@@ -50,6 +53,7 @@ export function PaletteExpansion() {
         isExpanded={expanded.tints}
         onToggle={() => toggleSection("tints")}
         onCopy={copyToClipboard}
+        isDark={isDark}
       />
 
       {/* Darker Tones */}
@@ -60,6 +64,7 @@ export function PaletteExpansion() {
         isExpanded={expanded.shades}
         onToggle={() => toggleSection("shades")}
         onCopy={copyToClipboard}
+        isDark={isDark}
       />
 
       {/* Neutral Lighter */}
@@ -70,6 +75,7 @@ export function PaletteExpansion() {
         isExpanded={expanded.neutralLighter}
         onToggle={() => toggleSection("neutralLighter")}
         onCopy={copyToClipboard}
+        isDark={isDark}
       />
 
       {/* Neutral Darker */}
@@ -80,6 +86,7 @@ export function PaletteExpansion() {
         isExpanded={expanded.neutralDarker}
         onToggle={() => toggleSection("neutralDarker")}
         onCopy={copyToClipboard}
+        isDark={isDark}
       />
     </div>
   )
@@ -92,6 +99,7 @@ function PaletteSection({
   isExpanded,
   onToggle,
   onCopy,
+  isDark,
 }: {
   title: string
   colors: string[]
@@ -99,6 +107,7 @@ function PaletteSection({
   isExpanded: boolean
   onToggle: () => void
   onCopy: (text: string) => void
+  isDark: boolean
 }) {
   return (
     <div>
@@ -129,6 +138,7 @@ function PaletteSection({
               color={color}
               label={`+${percentages[index]}%`}
               onCopy={onCopy}
+              isDark={isDark}
             />
           ))}
         </div>
@@ -141,16 +151,20 @@ function ColorSwatch({
   color,
   label,
   onCopy,
+  isDark,
 }: {
   color: string
   label: string
   onCopy: (text: string) => void
+  isDark: boolean
 }) {
   return (
     <button
       onClick={() => onCopy(color)}
       aria-label={`Copy color ${color} to clipboard`}
-      className="bg-slate-800/70 backdrop-blur-sm border border-white/10 rounded-xl p-3 flex flex-col gap-2 cursor-pointer transition-all hover:border-white/20 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-slate-800"
+      className={`bg-slate-800/70 backdrop-blur-sm border rounded-xl p-3 flex flex-col gap-2 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-slate-800 ${
+        isDark ? "border-white/50" : "border-gray-300"
+      }`}
     >
       <div
         className="w-full h-12 rounded-lg shadow-inner"
