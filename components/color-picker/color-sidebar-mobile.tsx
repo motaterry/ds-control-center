@@ -138,7 +138,7 @@ function MobileHeader({
 // Inline Title shown in content area (scrolls with content)
 export function MobileInlineTitle({ isDark }: { isDark: boolean }) {
   return (
-    <div className="px-8 pt-4 pb-6">
+    <div className="pt-4 pb-6">
       <h1 className={cn(
         "text-2xl font-bold tracking-tight",
         isDark ? "text-white" : "text-gray-900"
