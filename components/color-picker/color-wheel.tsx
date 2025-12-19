@@ -191,8 +191,8 @@ export function ColorWheel() {
   )
 
   return (
-    <div className="flex justify-center">
-      <div className="relative w-[256px] h-[256px]" ref={wheelRef}>
+    <div className="flex justify-center w-full px-2">
+      <div className="relative w-full max-w-[256px] aspect-square" ref={wheelRef}>
           <div
             ref={containerRef}
             role="slider"

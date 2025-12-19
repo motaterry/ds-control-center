@@ -281,6 +281,7 @@ export function BarChartDemo() {
                 stroke: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" 
               }}
               tickLine={false}
+              interval={0}
             />
             <YAxis
               tick={{ 

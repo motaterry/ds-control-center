@@ -59,7 +59,7 @@ const renderActiveShape = (props: any) => {
 
 // Hook to get responsive chart dimensions - scales based on container and viewport
 function useChartDimensions(containerRef: React.RefObject<HTMLDivElement | null>) {
-  const [dimensions, setDimensions] = useState({ size: 180, innerRadius: 60, outerRadius: 80 })
+  const [dimensions, setDimensions] = useState({ size: 180, innerRadius: 49, outerRadius: 79 })
   const lastContainerSize = useRef({ width: 0, height: 0 })
   
   useEffect(() => {
@@ -78,19 +78,15 @@ function useChartDimensions(containerRef: React.RefObject<HTMLDivElement | null>
       }
       lastContainerSize.current = { width: containerWidth, height: containerHeight }
       
-      // Reserve space for legend (roughly 100px on side layouts, 50px on stacked)
-      const isWideLayout = containerWidth > containerHeight * 1.3
-      const legendSpace = isWideLayout ? 150 : 60
+      // Chart sizing - minimum 180px, scales up with container
+      // Layout will wrap to 2 lines when container is too narrow
+      const availableHeight = containerHeight - 60 // Reserve space for legend when stacked
       
-      // Calculate available space for the chart
-      const availableWidth = isWideLayout ? containerWidth - legendSpace : containerWidth
-      const availableHeight = isWideLayout ? containerHeight : containerHeight - legendSpace
+      // Use container width or height, whichever is smaller, but enforce minimum
+      const maxDimension = Math.min(containerWidth, availableHeight)
       
-      // Use the smaller dimension, but be more aggressive about filling space
-      const maxDimension = Math.min(availableWidth, availableHeight)
-      
-      // Scale to fill 90% of available space, with higher max
-      const size = Math.max(140, Math.min(maxDimension * 0.92, 280))
+      // Scale to fill 90% of available space, min 180px, max 220px
+      const size = Math.max(180, Math.min(maxDimension * 0.9, 220))
       
       // Inner radius is ~60% of outer for thicker donut with more center breathing room
       // Nielsen #4: Aesthetic design - generous whitespace in center for readability
@@ -169,15 +165,15 @@ export function DoughnutChartDemo() {
       </CardHeader>
       <CardContent ref={chartContainerRef} className="flex-1 flex flex-col justify-center pt-0 pb-4 min-h-0 px-4 sm:px-5">
         {/* 
-          Responsive layout with proper breathing room
+          Responsive layout - wraps to 2 lines when needed
           Nielsen #8: Flexibility - adapts to different screen sizes
         */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 lg:gap-8 h-full justify-center min-w-0">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-5 justify-center w-full">
           {/* Responsive chart that scales with container */}
           <div 
             ref={chartRef}
-            className="relative flex-shrink-0"
-            style={{ width: chartSize, height: chartSize }}
+            className="relative shrink-0"
+            style={{ width: chartSize, height: chartSize, maxWidth: '100%' }}
             onMouseMove={handleMouseMove}
           >
             <ResponsiveContainer width="100%" height="100%">
@@ -389,44 +385,40 @@ export function DoughnutChartDemo() {
             
             WCAG AA Accessibility: All text meets 4.5:1 contrast ratio
           */}
-          <div className="flex flex-row sm:flex-col items-center sm:items-start justify-center gap-4 sm:gap-3 flex-shrink-0">
+          <div className="flex flex-row items-center justify-center gap-4">
             {/* Confirmed - primary emphasis */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-1.5">
               <div
-                className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
+                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: "var(--color-primary)" }}
               />
-              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5">
-                <span className={`text-sm sm:text-base font-semibold tabular-nums ${
-                  isDark ? "text-white" : "text-gray-800"
-                }`}>
-                  272
-                </span>
-                <span className={`text-xs sm:text-sm whitespace-nowrap ${
-                  isDark ? "text-white/70" : "text-gray-600"
-                }`}>
-                  confirmed
-                </span>
-              </div>
+              <span className={`text-sm font-semibold tabular-nums ${
+                isDark ? "text-white" : "text-gray-800"
+              }`}>
+                272
+              </span>
+              <span className={`text-xs whitespace-nowrap ${
+                isDark ? "text-white/70" : "text-gray-600"
+              }`}>
+                confirmed
+              </span>
             </div>
             
             {/* Pending - secondary emphasis */}
-            <div className="flex items-center gap-2.5">
-              <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0 ${
+            <div className="flex items-center gap-1.5">
+              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
                 isDark ? "bg-white/30" : "bg-gray-300"
               }`} />
-              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5">
-                <span className={`text-sm sm:text-base font-semibold tabular-nums ${
-                  isDark ? "text-white/80" : "text-gray-700"
-                }`}>
-                  48
-                </span>
-                <span className={`text-xs sm:text-sm whitespace-nowrap ${
-                  isDark ? "text-white/60" : "text-gray-500"
-                }`}>
-                  pending
-                </span>
-              </div>
+              <span className={`text-sm font-semibold tabular-nums ${
+                isDark ? "text-white/80" : "text-gray-700"
+              }`}>
+                48
+              </span>
+              <span className={`text-xs whitespace-nowrap ${
+                isDark ? "text-white/60" : "text-gray-500"
+              }`}>
+                pending
+              </span>
             </div>
           </div>
         </div>

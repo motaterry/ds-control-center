@@ -289,7 +289,7 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
                   <div className={`text-sm font-medium ${isDark ? "text-white" : "text-gray-900"}`}>
                     {format.label}
                   </div>
-                  <div className={`text-xs mt-0.5 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                  <div className={`text-xs mt-0.5 hidden sm:block ${isDark ? "text-white/50" : "text-gray-500"}`}>
                     {format.desc}
                   </div>
                 </button>

@@ -32,11 +32,11 @@ const ColorContext = createContext<ColorContextType | undefined>(undefined)
 
 const PERCENTAGES = [5, 20, 30, 40, 50, 60, 70, 80, 90]
 
-const DEFAULT_PRIMARY: HSL = { h: 27, s: 100, l: 50 }
+const DEFAULT_PRIMARY: HSL = { h: 114, s: 100, l: 58 }
 const DEFAULT_COMPLEMENTARY: HSL = {
-    h: getComplementaryColor(27),
+    h: 294,
     s: 100,
-    l: 50,
+    l: 58,
 }
 
 export function ColorProvider({ children }: { children: React.ReactNode }) {

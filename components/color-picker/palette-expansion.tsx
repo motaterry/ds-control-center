@@ -47,7 +47,7 @@ export function PaletteExpansion() {
     <div className="space-y-4">
       {/* Lighter Tones */}
       <PaletteSection
-        title="Lighter Tones (Tints)"
+        title="Lighter Tones"
         colors={theme.tints}
         percentages={PERCENTAGES}
         isExpanded={expanded.tints}
@@ -58,7 +58,7 @@ export function PaletteExpansion() {
 
       {/* Darker Tones */}
       <PaletteSection
-        title="Darker Tones (Shades)"
+        title="Darker Tones"
         colors={theme.shades}
         percentages={PERCENTAGES}
         isExpanded={expanded.shades}
@@ -162,18 +162,18 @@ function ColorSwatch({
     <button
       onClick={() => onCopy(color)}
       aria-label={`Copy color ${color} to clipboard`}
-      className={`bg-slate-800/70 backdrop-blur-sm border rounded-xl p-3 flex flex-col gap-2 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-slate-800 ${
+      className={`bg-slate-800/70 backdrop-blur-sm border rounded-xl p-2 flex flex-col gap-1 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-slate-800 ${
         isDark ? "border-white/50" : "border-gray-300"
       }`}
     >
       <div
-        className="w-full h-12 rounded-lg shadow-inner"
+        className="w-full h-10 rounded-lg shadow-inner"
         style={{ backgroundColor: color }}
         aria-hidden="true"
       />
-      <div className="flex flex-col gap-1 text-xs">
-        <span className="font-mono font-semibold text-white">{color}</span>
-        <span className="text-slate-400 text-[10px]" aria-label={`Mix percentage: ${label}`}>
+      <div className="flex flex-col gap-0.5 text-[11px] overflow-hidden">
+        <span className="font-mono font-semibold text-white truncate">{color}</span>
+        <span className="text-slate-400 text-[9px]" aria-label={`Mix percentage: ${label}`}>
           {label}
         </span>
       </div>

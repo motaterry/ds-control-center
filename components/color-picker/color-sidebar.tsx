@@ -7,10 +7,11 @@ import { useColorTheme } from "./color-context"
 import { useTheme } from "@/components/theme-context"
 import { useDesignSystem } from "@/components/design-system-context"
 import { hslToHex, formatHsl, getContrastRatio, getAccessibleTextColor, normalizeHex } from "@/lib/color-utils"
-import { ChevronDown, Moon, Type, SquareIcon } from "lucide-react"
+import { ChevronDown, Moon, Type, SquareIcon, Download } from "lucide-react"
 import { useToast } from "@/components/ui/toast"
 import { cn } from "@/lib/utils"
 import { DresscodeLogo } from "@/components/logo/dresscode-logo"
+import { ExportModal } from "./export-modal"
 
 const PERCENTAGES = [5, 20, 30, 40, 50, 60, 70, 80, 90]
 
@@ -66,6 +67,7 @@ export function ColorSidebar() {
   })
   const [isLogoStuck, setIsLogoStuck] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
   
   const primaryHex = hslToHex(theme.primary.h, theme.primary.s, theme.primary.l)
   const compHex = hslToHex(
@@ -288,7 +290,7 @@ export function ColorSidebar() {
         <div 
           ref={logoRef}
           className={cn(
-            "px-8 pb-4 pt-8 rounded-t-3xl",
+            "px-4 pb-4 pt-6 rounded-t-3xl",
             isLogoStuck && "sticky z-10 border-b",
             isLogoStuck && (isDark ? 'border-white/50' : 'border-gray-300')
           )}
@@ -307,8 +309,8 @@ export function ColorSidebar() {
         </div>
 
         {/* Header Section - Title & Description */}
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-8 px-8">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 px-4">
             <h1 className={`text-[35px] font-bold leading-[40px] tracking-[-0.16px] ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}>
@@ -338,7 +340,7 @@ export function ColorSidebar() {
         <div className={`h-px w-full ${isDark ? 'bg-white/50' : 'bg-gray-300'}`} />
 
         {/* Color Wheel Section */}
-        <div className="flex flex-col gap-[42px] items-center px-8 py-8">
+        <div className="flex flex-col gap-8 items-center px-4 py-6">
           <ColorWheel />
           
           {/* Custom Brand Color Input Section */}
@@ -512,9 +514,9 @@ export function ColorSidebar() {
         <div className={`h-px w-full ${isDark ? 'bg-white/50' : 'bg-gray-300'}`} />
 
         {/* Control Sections Container - Mode, Button Text, Border Radius, Palettes */}
-        {/* Nielsen's Heuristic #4: Consistency & Standards - Using consistent 8px grid spacing */}
+        {/* Nielsen's Heuristic #4: Consistency & Standards - Using consistent 16px padding */}
         {/* Nielsen's Heuristic #8: Aesthetic & Minimalist Design - Clear visual hierarchy */}
-        <div className="flex flex-col gap-8 px-8">
+        <div className="flex flex-col gap-6 px-4">
           {/* Mode Toggle Section */}
           <div className="flex flex-col gap-3">
             <div className="flex gap-2.5 items-center">
@@ -731,14 +733,14 @@ export function ColorSidebar() {
           {/* Palette Sections - Separated by larger gap for visual hierarchy */}
           <div className="flex flex-col gap-8 pt-4 pb-8">
           <PaletteSection
-            title="Lighter Tones (Tints)"
+            title="Lighter Tones"
             colors={theme.tints}
             isExpanded={expanded.tints}
             onToggle={() => toggleSection("tints")}
             darkestNeutral={theme.neutralDarker[theme.neutralDarker.length - 1]}
           />
           <PaletteSection
-            title="Darker Tones (Shades)"
+            title="Darker Tones"
             colors={theme.shades}
             isExpanded={expanded.shades}
             onToggle={() => toggleSection("shades")}
@@ -759,8 +761,33 @@ export function ColorSidebar() {
             darkestNeutral={theme.neutralDarker[theme.neutralDarker.length - 1]}
           />
           </div>
+
+          {/* Export Button */}
+          <div className="pt-4 pb-8">
+            <button
+              onClick={() => setIsExportModalOpen(true)}
+              className={`w-full py-3.5 px-4 font-semibold flex items-center justify-center gap-2.5 transition-colors duration-200 ease-out ${
+                isDark 
+                  ? "bg-white text-gray-900 hover:bg-gray-100" 
+                  : "bg-gray-900 text-white hover:bg-gray-800"
+              }`}
+              style={{ borderRadius: `${borderRadius}px` }}
+            >
+              <Download className="w-5 h-5" />
+              Export Theme
+            </button>
+            <p className={`text-xs text-center mt-2.5 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+              Download CSS, Tailwind & JSON tokens
+            </p>
+          </div>
         </div>
       </div>
+
+      {/* Export Modal */}
+      <ExportModal 
+        isOpen={isExportModalOpen} 
+        onClose={() => setIsExportModalOpen(false)} 
+      />
       
       {/* Scroll indicator - shows when user hasn't scrolled yet */}
       {!hasScrolled && (
@@ -955,24 +982,24 @@ function PaletteSection({
               key={index}
               onClick={() => copyToClipboard(color)}
               aria-label={`Copy color ${color} to clipboard`}
-              className={`backdrop-blur-sm border rounded-xl p-3 flex flex-col gap-2 cursor-pointer transition-all duration-200 ease-out hover:shadow-lg focus:outline-none focus:ring-1 ${
+              className={`backdrop-blur-sm border rounded-xl p-2 flex flex-col gap-1 cursor-pointer transition-all duration-200 ease-out hover:shadow-lg focus:outline-none focus:ring-1 ${
                 isDark 
                   ? "bg-neutral-800/70 border-neutral-700/30 focus:ring-white/30" 
                   : "bg-neutral-50 border-neutral-300/50 focus:ring-gray-400"
               }`}
             >
               <div
-                className="w-full h-12 rounded-lg shadow-inner"
+                className="w-full h-10 rounded-lg shadow-inner"
                 style={{ backgroundColor: color }}
                 aria-hidden="true"
               />
-              <div className="flex flex-col gap-1 text-xs">
-                <span className={`font-mono font-semibold ${
+              <div className="flex flex-col gap-0.5 text-[11px] overflow-hidden">
+                <span className={`font-mono font-semibold truncate ${
                   isDark ? "text-white" : "text-gray-900"
                 }`}>
                   {color}
                 </span>
-                <span className={isDark ? "text-slate-400" : "text-gray-600"} style={{ fontSize: "10px" }}>
+                <span className={isDark ? "text-slate-400" : "text-gray-600"} style={{ fontSize: "9px" }}>
                   +{PERCENTAGES[index]}%
                 </span>
               </div>
