@@ -401,9 +401,8 @@ script[type="application/json"][data-nextjs-portal] {
 
 /* Each set of cards in the scroll - must have identical heights for seamless loop */
 .scrolling-card-set {
-  /* Padding creates the gap at the seam point */
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  /* Gap at seam matches the grid gap (lg:gap-6 = 1.5rem) */
+  padding-bottom: 1.5rem;
 }
 
 /* Inner wrapper contains the actual card grid */
