@@ -63,11 +63,13 @@ export function ScrollingCardGrid({
           animationPlayState: isPaused ? "paused" : "running",
         }}
       >
-        {/* First set of cards */}
-        <div className="scrolling-card-set">{children}</div>
+        {/* First set of cards - wrapped with gap */}
+        <div className="scrolling-card-set">
+          <div className="scrolling-card-inner">{children}</div>
+        </div>
         {/* Duplicate set for seamless loop */}
         <div className="scrolling-card-set" aria-hidden="true">
-          {children}
+          <div className="scrolling-card-inner">{children}</div>
         </div>
       </div>
     </div>

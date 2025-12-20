@@ -399,9 +399,16 @@ script[type="application/json"][data-nextjs-portal] {
   }
 }
 
-/* Each set of cards in the scroll */
+/* Each set of cards in the scroll - must have identical heights for seamless loop */
 .scrolling-card-set {
-  padding-bottom: 1.5rem; /* Gap between duplicated sets */
+  /* Padding creates the gap at the seam point */
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Inner wrapper contains the actual card grid */
+.scrolling-card-inner {
+  /* Ensures content is contained cleanly */
 }
 
 /* Disable scroll animation when reduced motion is preferred */
