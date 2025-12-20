@@ -28,43 +28,51 @@ const Card = React.forwardRef<
   // Apply 3D effects when enabled
   const shouldApply3D = is3DEnabled && enable3D && effects
   
-  // Calculate border colors for 3D effect (lighter top, darker bottom)
-  const borderTopColor = shouldApply3D && isDark
-    ? "rgba(255, 255, 255, 0.15)" // Lighter top border in dark mode
-    : shouldApply3D && !isDark
-    ? "rgba(0, 0, 0, 0.08)" // Lighter top border in light mode
-    : undefined
+  // Build 3D border effect using inset shadows for smooth gradient transition
+  // Simulates light from above - bright top edge fading to dark bottom edge
+  const insetBorderShadow = shouldApply3D
+    ? isDark
+      ? [
+          // Top highlight - bright white glow on top edge
+          `inset 0 1px 0 0 rgba(255, 255, 255, 0.2)`,
+          // Bottom shadow - dark shadow on bottom edge  
+          `inset 0 -1px 0 0 rgba(0, 0, 0, 0.3)`,
+          // Subtle overall border glow
+          `inset 0 0 0 1px rgba(255, 255, 255, 0.08)`,
+        ].join(", ")
+      : [
+          // Top highlight - white glow on top edge
+          `inset 0 1px 0 0 rgba(255, 255, 255, 0.8)`,
+          // Bottom shadow - subtle dark on bottom edge
+          `inset 0 -1px 0 0 rgba(0, 0, 0, 0.1)`,
+          // Subtle overall border
+          `inset 0 0 0 1px rgba(0, 0, 0, 0.06)`,
+        ].join(", ")
+    : ""
+  
+  // Combine external shadow with inset border shadow
+  const combinedShadow = shouldApply3D
+    ? `${boxShadow}, ${insetBorderShadow}`
+    : boxShadow
     
-  const borderBottomColor = shouldApply3D && isDark
-    ? "rgba(255, 255, 255, 0.05)" // Darker bottom border in dark mode
-    : shouldApply3D && !isDark
-    ? "rgba(0, 0, 0, 0.12)" // Darker bottom border in light mode
-    : undefined
+  const combinedShadowHover = shouldApply3D
+    ? `${boxShadowHover}, ${insetBorderShadow}`
+    : boxShadowHover
   
   // Handle hover state for 3D effects
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (shouldApply3D && boxShadowHover) {
-      e.currentTarget.style.boxShadow = boxShadowHover
+    if (shouldApply3D && combinedShadowHover) {
+      e.currentTarget.style.boxShadow = combinedShadowHover
     }
     props.onMouseEnter?.(e)
   }
   
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (shouldApply3D && boxShadow) {
-      e.currentTarget.style.boxShadow = boxShadow
+    if (shouldApply3D && combinedShadow) {
+      e.currentTarget.style.boxShadow = combinedShadow
     }
     props.onMouseLeave?.(e)
   }
-  
-  // Build border style for 3D effect
-  const borderStyle = shouldApply3D && borderTopColor && borderBottomColor
-    ? {
-        borderTop: `1px solid ${borderTopColor}`,
-        borderRight: `1px solid ${isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}`,
-        borderBottom: `1px solid ${borderBottomColor}`,
-        borderLeft: `1px solid ${isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}`,
-      }
-    : {}
   
   return (
     <div
@@ -88,10 +96,8 @@ const Card = React.forwardRef<
         borderRadius: "var(--border-radius)",
         // Apply 3D background gradient
         ...(shouldApply3D && effects ? { background: effects.gradient } : {}),
-        // Apply 3D shadow
-        ...(shouldApply3D ? { boxShadow } : {}),
-        // Apply 3D border
-        ...borderStyle,
+        // Apply combined shadow (external + inset border)
+        ...(shouldApply3D ? { boxShadow: combinedShadow } : {}),
         ...props.style, // Merge with any existing styles
       }}
       onMouseEnter={handleMouseEnter}
