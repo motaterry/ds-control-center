@@ -13,7 +13,7 @@ interface ExportModalProps {
   onClose: () => void
 }
 
-type ExportFormat = "css" | "tailwind" | "json"
+type ExportFormat = "css" | "tailwind" | "json" | "scss"
 
 export function ExportModal({ isOpen, onClose }: ExportModalProps) {
   const { theme } = useColorTheme()
@@ -119,6 +119,46 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
 `
   }
 
+  // Generate SCSS Variables export
+  const generateSCSS = () => {
+    const primaryHex = hslToHex(theme.primary.h, theme.primary.s, theme.primary.l)
+    const compHex = hslToHex(theme.complementary.h, theme.complementary.s, theme.complementary.l)
+    
+    return `// DressCode Design System Export (SCSS)
+// Generated at ${new Date().toISOString()}
+
+// Primary Color
+$primary-h: ${theme.primary.h};
+$primary-s: ${theme.primary.s}%;
+$primary-l: ${theme.primary.l}%;
+$color-primary: hsl($primary-h, $primary-s, $primary-l);
+$color-primary-hex: ${primaryHex};
+
+// Complementary Color
+$comp-h: ${theme.complementary.h};
+$comp-s: ${theme.complementary.s}%;
+$comp-l: ${theme.complementary.l}%;
+$color-complementary: hsl($comp-h, $comp-s, $comp-l);
+$color-complementary-hex: ${compHex};
+
+// Design System Settings
+$border-radius: ${borderRadius}px;
+$button-text-color: ${buttonTextColor};
+
+// Lighter Tones (Tints)
+${theme.tints.map((color, i) => `$tint-${(i + 1) * 10}: ${color};`).join('\n')}
+
+// Darker Tones (Shades)
+${theme.shades.map((color, i) => `$shade-${(i + 1) * 10}: ${color};`).join('\n')}
+
+// Neutral Lighter
+${theme.neutralLighter.map((color, i) => `$neutral-light-${(i + 1) * 10}: ${color};`).join('\n')}
+
+// Neutral Darker
+${theme.neutralDarker.map((color, i) => `$neutral-dark-${(i + 1) * 10}: ${color};`).join('\n')}
+`
+  }
+
   // Generate JSON Tokens export
   const generateJSON = () => {
     const primaryHex = hslToHex(theme.primary.h, theme.primary.s, theme.primary.l)
@@ -179,6 +219,7 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
       case "css": return generateCSS()
       case "tailwind": return generateTailwind()
       case "json": return generateJSON()
+      case "scss": return generateSCSS()
     }
   }
 
@@ -194,7 +235,10 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
 
   const handleDownload = () => {
     const content = getExportContent()
-    const extension = selectedFormat === "json" ? "json" : selectedFormat === "tailwind" ? "js" : "css"
+    const extension = selectedFormat === "json" ? "json" 
+      : selectedFormat === "tailwind" ? "js" 
+      : selectedFormat === "scss" ? "scss"
+      : "css"
     const filename = `dresscode-theme.${extension}`
     
     const blob = new Blob([content], { type: "text/plain" })
@@ -212,6 +256,7 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
 
   const formats = [
     { id: "css" as const, label: "CSS Variables", icon: FileCode, desc: "Copy-paste ready" },
+    { id: "scss" as const, label: "SCSS Variables", icon: FileCode, desc: "For SCSS projects" },
     { id: "tailwind" as const, label: "Tailwind Config", icon: Palette, desc: "For tailwind.config.js" },
     { id: "json" as const, label: "JSON Tokens", icon: FileJson, desc: "Design tokens format" },
   ]
@@ -268,12 +313,12 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
             <label className={`text-sm font-medium ${isDark ? "text-white/80" : "text-gray-700"}`}>
               Export Format
             </label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {formats.map((format) => (
                 <button
                   key={format.id}
                   onClick={() => setSelectedFormat(format.id)}
-                  className={`p-3 rounded-xl border-2 transition-all text-left ${
+                  className={`p-3 rounded-xl border-2 transition-all text-left flex flex-col min-h-[100px] ${
                     selectedFormat === format.id
                       ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10"
                       : isDark 
@@ -281,15 +326,15 @@ ${theme.neutralDarker.map((color, i) => `            ${(i + 1) * 10}: '${color}'
                         : "border-gray-200 hover:border-gray-300 bg-gray-50"
                   }`}
                 >
-                  <format.icon className={`w-5 h-5 mb-2 ${
+                  <format.icon className={`w-5 h-5 mb-2 flex-shrink-0 ${
                     selectedFormat === format.id 
                       ? "text-[var(--color-primary)]" 
                       : isDark ? "text-white/60" : "text-gray-500"
                   }`} />
-                  <div className={`text-sm font-medium ${isDark ? "text-white" : "text-gray-900"}`}>
+                  <div className={`text-sm font-medium mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>
                     {format.label}
                   </div>
-                  <div className={`text-xs mt-0.5 hidden sm:block ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                  <div className={`text-xs leading-tight break-words hidden sm:block flex-grow ${isDark ? "text-white/50" : "text-gray-500"}`}>
                     {format.desc}
                   </div>
                 </button>

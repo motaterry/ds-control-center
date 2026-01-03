@@ -92,7 +92,7 @@ export function ColorSidebarMobile() {
                 "text-xs text-center mt-2.5",
                 isDark ? "text-white/50" : "text-gray-500"
               )}>
-                Download CSS, Tailwind & JSON tokens
+                Download CSS, SCSS, Tailwind & JSON tokens
               </p>
             </div>
           </div>
