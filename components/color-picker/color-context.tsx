@@ -20,12 +20,22 @@ interface ColorTheme {
   neutralDarker: string[]
 }
 
+interface ColorHistoryState {
+  primary: HSL
+  complementary: HSL
+}
+
 interface ColorContextType {
   theme: ColorTheme
   updatePrimaryColor: (hue: number, saturation?: number, lightness?: number) => void
   updatePrimaryFromHex: (hex: string) => void
   updateComplementaryFromHex: (hex: string) => void
   resetColors: () => void
+  applyPreset: (hex: string) => void
+  undo: () => void
+  redo: () => void
+  canUndo: boolean
+  canRedo: boolean
 }
 
 const ColorContext = createContext<ColorContextType | undefined>(undefined)
@@ -39,9 +49,15 @@ const DEFAULT_COMPLEMENTARY: HSL = {
     l: 58,
 }
 
+const MAX_HISTORY_SIZE = 50
+
 export function ColorProvider({ children }: { children: React.ReactNode }) {
   const [primary, setPrimary] = useState<HSL>(DEFAULT_PRIMARY)
   const [complementary, setComplementary] = useState<HSL>(DEFAULT_COMPLEMENTARY)
+  const [history, setHistory] = useState<ColorHistoryState[]>([
+    { primary: DEFAULT_PRIMARY, complementary: DEFAULT_COMPLEMENTARY },
+  ])
+  const [historyIndex, setHistoryIndex] = useState(0)
 
   // Generate color palette
   const primaryHex = hslToHex(primary.h, primary.s, primary.l)
@@ -82,17 +98,34 @@ export function ColorProvider({ children }: { children: React.ReactNode }) {
     )
   }, [primary, complementary])
 
+  // Add state to history
+  const addToHistory = useCallback((newPrimary: HSL, newComplementary: HSL) => {
+    setHistory((prev) => {
+      const newHistory = prev.slice(0, historyIndex + 1)
+      newHistory.push({ primary: newPrimary, complementary: newComplementary })
+      // Limit history size
+      if (newHistory.length > MAX_HISTORY_SIZE) {
+        newHistory.shift()
+        return newHistory
+      }
+      return newHistory
+    })
+    setHistoryIndex((prev) => Math.min(prev + 1, MAX_HISTORY_SIZE - 1))
+  }, [historyIndex])
+
   const updatePrimaryColor = useCallback(
     (hue: number, saturation: number = 100, lightness: number = 50) => {
       const newPrimary: HSL = { h: hue, s: saturation, l: lightness }
-      setPrimary(newPrimary)
-      setComplementary({
+      const newComplementary: HSL = {
         h: getComplementaryColor(hue),
         s: saturation,
         l: lightness,
-      })
+      }
+      addToHistory(newPrimary, newComplementary)
+      setPrimary(newPrimary)
+      setComplementary(newComplementary)
     },
-    []
+    [addToHistory]
   )
 
   const updatePrimaryFromHex = useCallback(
@@ -106,19 +139,81 @@ export function ColorProvider({ children }: { children: React.ReactNode }) {
   const updateComplementaryFromHex = useCallback(
     (hex: string) => {
       const hsl = hexToHsl(hex)
-      setComplementary({ h: hsl.h, s: hsl.s, l: hsl.l })
+      const newComplementary: HSL = { h: hsl.h, s: hsl.s, l: hsl.l }
+      addToHistory(primary, newComplementary)
+      setComplementary(newComplementary)
     },
-    []
+    [addToHistory, primary]
   )
 
   const resetColors = useCallback(() => {
+    const defaultState = { primary: DEFAULT_PRIMARY, complementary: DEFAULT_COMPLEMENTARY }
+    setHistory([defaultState])
+    setHistoryIndex(0)
     setPrimary(DEFAULT_PRIMARY)
     setComplementary(DEFAULT_COMPLEMENTARY)
   }, [])
 
+  const applyPreset = useCallback(
+    (hex: string) => {
+      updatePrimaryFromHex(hex)
+    },
+    [updatePrimaryFromHex]
+  )
+
+  const undo = useCallback(() => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1
+      const state = history[newIndex]
+      setHistoryIndex(newIndex)
+      setPrimary(state.primary)
+      setComplementary(state.complementary)
+    }
+  }, [history, historyIndex])
+
+  const redo = useCallback(() => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1
+      const state = history[newIndex]
+      setHistoryIndex(newIndex)
+      setPrimary(state.primary)
+      setComplementary(state.complementary)
+    }
+  }, [history, historyIndex])
+
+  const canUndo = historyIndex > 0
+  const canRedo = historyIndex < history.length - 1
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        if (canUndo) undo()
+      } else if ((e.metaKey || e.ctrlKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault()
+        if (canRedo) redo()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [canUndo, canRedo, undo, redo])
+
   return (
     <ColorContext.Provider
-      value={{ theme, updatePrimaryColor, updatePrimaryFromHex, updateComplementaryFromHex, resetColors }}
+      value={{ 
+        theme, 
+        updatePrimaryColor, 
+        updatePrimaryFromHex, 
+        updateComplementaryFromHex, 
+        resetColors, 
+        applyPreset,
+        undo,
+        redo,
+        canUndo,
+        canRedo,
+      }}
     >
       {children}
     </ColorContext.Provider>
