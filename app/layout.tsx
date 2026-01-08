@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { ColorProvider } from "@/components/color-picker/color-context"
 import { ToastProvider } from "@/components/ui/toast"
@@ -8,11 +8,12 @@ import { DesignSystemProvider } from "@/components/design-system-context"
 export const metadata: Metadata = {
   title: "Control Center - Color Dashboard",
   description: "Dynamic color customization control center",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 }
 
 // Inline script to initialize theme before React hydrates - prevents flash of incorrect theme

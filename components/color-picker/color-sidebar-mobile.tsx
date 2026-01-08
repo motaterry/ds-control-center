@@ -373,7 +373,7 @@ function ColorsTab({ isDark }: { isDark: boolean }) {
 
   const handlePrimaryPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault()
-    const pastedText = e.clipboardData.getText().trim()
+    const pastedText = e.clipboardData.getData('text/plain').trim()
     const normalized = normalizeHex(pastedText)
     if (normalized) {
       setCustomHexInput(normalized)
@@ -426,7 +426,7 @@ function ColorsTab({ isDark }: { isDark: boolean }) {
 
   const handleCompPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault()
-    const pastedText = e.clipboardData.getText().trim()
+    const pastedText = e.clipboardData.getData('text/plain').trim()
     const normalized = normalizeHex(pastedText)
     if (normalized) {
       setCustomCompHexInput(normalized)
