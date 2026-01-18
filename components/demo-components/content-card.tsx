@@ -7,13 +7,18 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useTheme } from "@/components/theme-context"
 import { useDesignSystem } from "@/components/design-system-context"
+import { type EffectPreset } from "@/lib/effect-presets"
+
+// Helper function to check if preset is monochromatic
+function isMonochromaticPreset(preset: EffectPreset): boolean {
+  return preset === "monochromatic"
+}
 
 export function ContentCard() {
   const { mode } = useTheme()
   const { effectPreset } = useDesignSystem()
   const isDark = mode === "dark"
-  // Check if preset is monochromatic - same pattern used in design-system-context.tsx
-  const isMonochromatic = effectPreset === "monochromatic"
+  const isMonochromatic = isMonochromaticPreset(effectPreset)
   
   return (
     <Card className="overflow-hidden h-full flex flex-col">
