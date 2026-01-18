@@ -23,8 +23,9 @@ import { Settings, User, Bell, Shield } from "lucide-react"
  */
 export function RadixThemesComponent() {
   const { mode } = useTheme()
-  const { buttonTextColor } = useDesignSystem()
+  const { buttonTextColor, effectPreset } = useDesignSystem()
   const isDark = mode === "dark"
+  const isMonochromatic = effectPreset === "monochromatic"
   const [settings, setSettings] = useState({
     notifications: true,
     darkMode: false,
@@ -46,9 +47,15 @@ export function RadixThemesComponent() {
       {/* Header Section with Icon */}
       <CardHeader className="pb-2 pt-5 px-5">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[var(--color-primary)]/20">
+          <div className={`p-2 rounded-lg ${
+            isMonochromatic
+              ? (isDark ? "border border-white/20" : "border border-gray-900/20")
+              : "bg-[var(--color-primary)]/20"
+          }`}>
             <Settings className={`w-5 h-5 ${
-              isDark ? "text-[var(--color-primary)]" : "text-[var(--color-primary-darker)]"
+              isMonochromatic
+                ? (isDark ? "text-white" : "text-gray-900")
+                : (isDark ? "text-[var(--color-primary)]" : "text-[var(--color-primary-darker)]")
             }`} />
           </div>
           <div className="flex-1">

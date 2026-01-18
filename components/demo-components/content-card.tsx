@@ -6,10 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useTheme } from "@/components/theme-context"
+import { useDesignSystem } from "@/components/design-system-context"
 
 export function ContentCard() {
   const { mode } = useTheme()
+  const { effectPreset } = useDesignSystem()
   const isDark = mode === "dark"
+  const isMonochromatic = effectPreset === "monochromatic"
   
   return (
     <Card className="overflow-hidden h-full flex flex-col">
@@ -21,9 +24,13 @@ export function ContentCard() {
         }}
       >
         <div className="absolute top-3 right-3">
-          <span className={`px-2 py-1 rounded text-xs font-semibold bg-green-500 ${
-            isDark ? "text-white" : "text-white"
-          }`}>
+          <span 
+            className={`px-2 py-1 rounded text-xs font-semibold ${
+              isMonochromatic 
+                ? (isDark ? "bg-white text-black" : "bg-black text-white")
+                : "bg-green-500 text-white"
+            }`}
+          >
             Ativo
           </span>
         </div>

@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { useTheme } from "@/components/theme-context"
 import { useColorTheme } from "@/components/color-picker/color-context"
+import { useDesignSystem } from "@/components/design-system-context"
 import { 
   DropdownMenu, 
   DropdownTrigger, 
@@ -26,12 +27,17 @@ import { useToast } from "@/components/ui/toast"
 export function UserProfileCard() {
   const { mode } = useTheme()
   const { theme } = useColorTheme()
+  const { effectPreset } = useDesignSystem()
   const { addToast } = useToast()
   const isDark = mode === "dark"
+  const isMonochromatic = effectPreset === "monochromatic"
   
-  // Use lighter tones (tints) for dark mode, darker tones (shades) for light mode
+  // In monochromatic mode, use black (light mode) or white (dark mode)
+  // Otherwise, use lighter tones (tints) for dark mode, darker tones (shades) for light mode
   // Index 2 = 30% mix, provides good contrast
-  const tagColor = isDark ? theme.tints[2] : theme.shades[2]
+  const tagColor = isMonochromatic
+    ? (isDark ? "#ffffff" : "#000000")
+    : (isDark ? theme.tints[2] : theme.shades[2])
 
   const handleMenuAction = (action: string) => {
     addToast({
@@ -126,7 +132,9 @@ export function UserProfileCard() {
         <span
           className="px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent whitespace-nowrap"
           style={{ 
-            borderColor: `${tagColor}99`, // 60% opacity
+            borderColor: isMonochromatic 
+              ? (isDark ? "rgba(255, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.6)")
+              : `${tagColor}99`, // 60% opacity
             color: tagColor 
           }}
           role="listitem"
@@ -136,7 +144,9 @@ export function UserProfileCard() {
         <span
           className="px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent whitespace-nowrap"
           style={{ 
-            borderColor: `${tagColor}99`, // 60% opacity
+            borderColor: isMonochromatic 
+              ? (isDark ? "rgba(255, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.6)")
+              : `${tagColor}99`, // 60% opacity
             color: tagColor 
           }}
           role="listitem"
@@ -146,7 +156,9 @@ export function UserProfileCard() {
         <span
           className="px-3 py-1.5 rounded-md text-xs font-medium border bg-transparent whitespace-nowrap"
           style={{ 
-            borderColor: `${tagColor}99`, // 60% opacity
+            borderColor: isMonochromatic 
+              ? (isDark ? "rgba(255, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.6)")
+              : `${tagColor}99`, // 60% opacity
             color: tagColor 
           }}
           role="listitem"
