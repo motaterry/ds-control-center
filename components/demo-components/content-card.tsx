@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useTheme } from "@/components/theme-context"
 import { useDesignSystem } from "@/components/design-system-context"
+import { type EffectPreset } from "@/lib/effect-presets"
 
 export function ContentCard() {
   const { mode } = useTheme()
   const { effectPreset } = useDesignSystem()
   const isDark = mode === "dark"
-  const isMonochromatic = effectPreset === "monochromatic"
+  const monochromaticPreset: EffectPreset = "monochromatic"
+  const isMonochromatic = effectPreset === monochromaticPreset
   
   return (
     <Card className="overflow-hidden h-full flex flex-col">
