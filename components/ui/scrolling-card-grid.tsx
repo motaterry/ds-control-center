@@ -100,14 +100,19 @@ export function ScrollingCardGrid({
     
     // Get current transform position from animation
     const getCurrentTransform = (): number => {
-      if (animation && animation.currentTime !== null && animation.currentTime !== undefined) {
-        // Use animation progress if available
+      if (animation) {
         const currentTime = animation.currentTime
-        const progress = (currentTime % (duration * 1000)) / (duration * 1000)
-        const contentHeight = content.offsetHeight
-        const maxScroll = -(contentHeight / 2)
-        return progress * maxScroll
-      } else {
+        // Use animation progress if available and currentTime is a number
+        if (currentTime !== null && typeof currentTime === 'number') {
+          const progress = (currentTime % (duration * 1000)) / (duration * 1000)
+          const contentHeight = content.offsetHeight
+          const maxScroll = -(contentHeight / 2)
+          return progress * maxScroll
+        }
+      }
+      
+      // Fallback to computed style
+      {
         // Fallback to computed style
         const computedStyle = window.getComputedStyle(content)
         const matrix = computedStyle.transform
