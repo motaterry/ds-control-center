@@ -49,12 +49,12 @@ export function RadixThemesComponent() {
       <CardHeader className="pb-2 pt-5 px-5">
         <div className="flex items-center gap-3">
           <div className={`p-2 rounded-lg ${
-            isMonochromatic
+            isMonochromaticPreset
               ? (isDark ? "border border-white/20" : "border border-gray-900/20")
               : "bg-[var(--color-primary)]/20"
           }`}>
             <Settings className={`w-5 h-5 ${
-              isMonochromatic
+              isMonochromaticPreset
                 ? (isDark ? "text-white" : "text-gray-900")
                 : (isDark ? "text-[var(--color-primary)]" : "text-[var(--color-primary-darker)]")
             }`} />
